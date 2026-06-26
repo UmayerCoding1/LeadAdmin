@@ -98,17 +98,44 @@ export default function ContactsPage() {
       accessorKey: "emailFromWebsite",
       header: "Email",
       cell: ({ row }) => {
-        const email = row.getValue("emailFromWebsite") as string;
-        return email ? <a href={`mailto:${email}`} className="text-blue-500 hover:underline">{email}</a> : <span className="text-zinc-400">N/A</span>;
+        const contact = row.original;
+        const email = contact.extraFields.Email_From_WEBSITE || contact.email || contact.extraFields?.email;
+        return email ? (
+          <a href={`mailto:${email}`} className="text-blue-500 hover:underline">
+            {email}
+          </a>
+        ) : (
+          <span className="text-zinc-400">N/A</span>
+        );
       },
     },
     {
       accessorKey: "phoneStandardFormat",
       header: "Phone",
+      cell: ({ row }) => {
+        const contact = row.original;
+        const phone =
+          contact.phoneStandardFormat ||
+          contact.phone1 ||
+          contact.phoneFromWebsite ||
+          contact.extraFields?.Phone_1 ||
+          contact.extraFields?.Phone_From_WEBSITE ||
+          contact.extraFields?.phone_1 ||
+          contact.extraFields?.phone_from_website;
+        return phone || <span className="text-zinc-400">N/A</span>;
+      },
     },
     {
       accessorKey: "firstCategory",
       header: "Category",
+      cell: ({ row }) => {
+        const contact = row.original;
+        const category =
+          contact.firstCategory ||
+          contact.extraFields?.First_category ||
+          contact.extraFields?.first_category;
+        return category || <span className="text-zinc-400">N/A</span>;
+      },
     },
     {
       accessorKey: "responseStatus",

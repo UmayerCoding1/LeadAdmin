@@ -15,6 +15,7 @@ const KNOWN_COLUMNS: Record<string, string> = {
   phone1: "phone1",
   phonestandardformat: "phoneStandardFormat",
   phonefromwebsite: "phoneFromWebsite",
+  email: "emailFromWebsite",
   emailfromwebsite: "emailFromWebsite",
   website: "website",
   domain: "domain",
@@ -159,7 +160,7 @@ export function parseSheetBuffer(buffer: Buffer) {
       const normalizedKey = key
         .trim()
         .toLowerCase()
-        .replace(/\s+/g, "");
+        .replace(/[\s_-]+/g, "");
 
 
 
