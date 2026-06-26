@@ -45,37 +45,41 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {Object.keys(rowSelection).length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 p-3 rounded-lg flex items-center justify-between"
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          className="bg-indigo-600 dark:bg-indigo-600 p-4 rounded-2xl flex items-center justify-between shadow-xl shadow-indigo-500/20 text-white"
         >
-          <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">
-            {Object.keys(rowSelection).length} row(s) selected
-          </span>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+              <Mail className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-sm font-bold">
+              {Object.keys(rowSelection).length} Selected Leads
+            </span>
+          </div>
           <button 
             onClick={() => onBulkSend?.(table.getSelectedRowModel().rows.map(r => r.original))}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md text-sm font-medium flex items-center transition"
+            className="bg-white text-indigo-600 hover:bg-zinc-100 px-6 py-2 rounded-xl text-sm font-bold transition-all active:scale-95 shadow-lg"
           >
-            <Mail className="h-4 w-4 mr-2" />
-            Bulk Send Email
+            Send Bulk Email
           </button>
         </motion.div>
       )}
 
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
+      <div className="rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-zinc-50 dark:bg-zinc-950/50 text-zinc-500 dark:text-zinc-400 font-medium border-b border-zinc-200 dark:border-zinc-800">
+            <thead>
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
+                <tr key={headerGroup.id} className="border-b border-zinc-200/50 dark:border-zinc-800/50">
                   {headerGroup.headers.map((header) => {
                     return (
                       <th
                         key={header.id}
-                        className="px-4 py-3 whitespace-nowrap"
+                        className="px-6 py-5 text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 whitespace-nowrap"
                       >
                         {header.isPlaceholder
                           ? null
@@ -86,28 +90,29 @@ export function DataTable<TData, TValue>({
                       </th>
                     );
                   })}
+                  <th className="px-6 py-5"></th>
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tbody className="divide-y divide-zinc-200/30 dark:divide-zinc-800/30">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                    className="group hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 transition-all duration-200"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
+                      <td key={cell.id} className="px-6 py-4 text-zinc-700 dark:text-zinc-300">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
                         )}
                       </td>
                     ))}
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => router.push(`/dashboard/contacts/${(row.original as any)._id}`)}
-                        className="p-1 text-zinc-400 hover:text-blue-600 transition"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center text-zinc-400 group-hover:text-indigo-600 group-hover:bg-indigo-500/10 transition-all duration-200"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
@@ -118,9 +123,12 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td
                     colSpan={columns.length + 1}
-                    className="h-24 text-center text-zinc-500"
+                    className="h-32 text-center text-zinc-500 font-medium"
                   >
-                    No results.
+                    <div className="flex flex-col items-center gap-2">
+                       <Filter className="h-8 w-8 opacity-20" />
+                       No leads found matching your criteria.
+                    </div>
                   </td>
                 </tr>
               )}
@@ -130,24 +138,24 @@ export function DataTable<TData, TValue>({
       </div>
 
       {pageCount > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-zinc-500">
-            Page {pageIndex} of {pageCount}
+        <div className="flex items-center justify-between px-2">
+          <div className="text-sm font-medium text-zinc-500">
+            Showing <span className="text-zinc-900 dark:text-white">{pageIndex}</span> of <span className="text-zinc-900 dark:text-white">{pageCount}</span> pages
           </div>
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => onPaginationChange(pageIndex - 1)}
               disabled={pageIndex <= 1}
-              className="px-3 py-1 border border-zinc-200 dark:border-zinc-800 rounded-md text-sm font-medium disabled:opacity-50 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
+              className="p-3 border border-zinc-200/50 dark:border-zinc-800/50 rounded-xl text-sm font-bold disabled:opacity-30 hover:bg-white dark:hover:bg-zinc-900 transition-all active:scale-95 shadow-sm"
             >
-              Previous
+              <ChevronRight className="h-4 w-4 rotate-180" />
             </button>
             <button
               onClick={() => onPaginationChange(pageIndex + 1)}
               disabled={pageIndex >= pageCount}
-              className="px-3 py-1 border border-zinc-200 dark:border-zinc-800 rounded-md text-sm font-medium disabled:opacity-50 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
+              className="p-3 border border-zinc-200/50 dark:border-zinc-800/50 rounded-xl text-sm font-bold disabled:opacity-30 hover:bg-white dark:hover:bg-zinc-900 transition-all active:scale-95 shadow-sm"
             >
-              Next
+              <ChevronRight className="h-4 w-4" />
             </button>
           </div>
         </div>
